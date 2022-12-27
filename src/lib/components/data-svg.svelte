@@ -20,10 +20,11 @@
   onMount(() => {
     (async function () {
       // [, ] = await Promise.all([
-      (mattersQrCodeUri = await QRCode.toDataURL('https://matters.news', { margin: 0 })),
-        (localQrCodeUri = await QRCode.toDataURL('https://data-of-year-2022.matters.one', {
-          margin: 0
-        }));
+      mattersQrCodeUri = await QRCode.toDataURL('https://matters.news', { margin: 0 });
+      localQrCodeUri = await QRCode.toDataURL(window.location.href, {
+        margin: 0
+      });
+
       if (userData?.data?.avatar) {
         for (const formatAvatar of tryNextAvatarFormat(userData.data.avatar)) {
           try {
@@ -128,7 +129,7 @@
     <text>
       <tspan
         fill="#FFEB97"
-        font-size="40"
+        font-size={userData?.data?.numReadings > 10e3 ? 32 : 40}
         font-weight="bold"
         letter-spacing="0em"
         x="94.1914"
@@ -177,8 +178,12 @@
     >
     <line x1="396.5" y1="737.5" x2="579.5" y2="737.5" stroke="#FFEB97" stroke-dasharray="4 6" />
     <text xml:space="preserve" letter-spacing="0em">
-      <tspan fill="#FFEB97" font-size="40" font-weight="bold" x="396.691" y="781.2"
-        >{nFmt(userData?.data?.numAppreciatedArticles)}</tspan
+      <tspan
+        fill="#FFEB97"
+        font-size={userData?.data?.numAppreciatedArticles > 10e3 ? 32 : 40}
+        font-weight="bold"
+        x="396.691"
+        y="781.2">{nFmt(userData?.data?.numAppreciatedArticles)}</tspan
       >
       <tspan fill="white" font-size="24" y="775.12">篇文章</tspan>
     </text>

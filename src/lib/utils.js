@@ -83,15 +83,15 @@ export function serialize(svg) {
   return new Blob([string], { type: 'image/svg+xml' });
 }
 
-export function rasterize(svg) {
+export function rasterize(svg, { scale = 1.0 } = {}) {
   // let resolve, reject;
   return new Promise((resolve, reject) => {
     const image = new Image();
     image.onerror = reject;
     image.onload = () => {
       const rect = svg.getBoundingClientRect();
-      const context = context2d(rect.width, rect.height);
-      context.drawImage(image, 0, 0, rect.width, rect.height);
+      const context = context2d(rect.width * scale, rect.height * scale);
+      context.drawImage(image, 0, 0, rect.width * scale, rect.height * scale);
       context.canvas.toBlob(resolve);
     };
     image.src = URL.createObjectURL(serialize(svg));
@@ -99,9 +99,9 @@ export function rasterize(svg) {
 }
 
 export function* tryNextAvatarFormat(src) {
-  yield src.replace(/.\w+$/, '.webp');
   yield src.replace(/avatar/, 'processed/540w/avatar').replace(/.\w+$/, '.webp');
   yield src.replace(/avatar/, 'processed/540w/avatar');
+  yield src.replace(/.\w+$/, '.webp');
   yield src.replace(/avatar/, 'processed/144w/avatar').replace(/.\w+$/, '.webp');
   yield src.replace(/avatar/, 'processed/144w/avatar');
   yield src;
