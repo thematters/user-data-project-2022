@@ -17,7 +17,8 @@
 
   // $: userData = data;
 
-  let userName = data?.searchParams?.userName;
+  let userName = data?.searchParams?.userName ?? 'hi176';
+  let yearKeywords = data?.searchParams?.keyWords ?? 'Web3-Matters';
 
   // let avatarImg = defaultImg;
 
@@ -36,13 +37,13 @@
   async function downloadAsPng(event) {
     console.log('event is:', event, dataSvg);
 
-    const blob = await rasterize(dataSvg);
+    const blob = await rasterize(dataSvg, { scale: 1.25 });
     console.log(`got blob:`, blob);
     const blobUrl = URL.createObjectURL(blob);
     console.log('got blobUrl:', blobUrl);
 
     const link = document.createElement('a');
-    link.download = `untitled.png`;
+    link.download = `${data?.data?.displayName ?? 'untitled'}-${yearKeywords}.png`;
     link.href = blobUrl;
     link.click();
     URL.revokeObjectURL(blobUrl);
@@ -53,7 +54,7 @@
 </script>
 
 <main style="max-width: 800px; margin: 0 auto;">
-  <h1>Welcome to User Data of The Year 2022</h1>
+  <h1>歡迎使用 Matters.News 年度數據 看板</h1>
 
   <form>
     <div class="row">
@@ -75,19 +76,26 @@
             type="text"
             name="keyWords"
             placeholder="我的年度創作關鍵字是"
-            value="Web3-Matters"
+            bind:value={yearKeywords}
           />
         </label>
       </div>
+      <div class="field">
+        <button type="submit">Enter</button>
+      </div>
     </div>
-    <button type="submit">Submit</button>
-    <button on:click={downloadAsPng}>Download</button>
   </form>
+  <div class="download-links">
+    <a href="/" on:click={downloadAsPng}>Download as PNG</a>
+  </div>
 
-  <DataSvg userData={data} bind:el={dataSvg} />
+  <DataSvg userData={data} {yearKeywords} bind:el={dataSvg} />
 </main>
 
 <style>
+  h1 {
+    text-align: center;
+  }
   form {
     margin-bottom: 1rem;
   }
@@ -95,7 +103,7 @@
     display: flex;
   }
   form button[type='submit'] {
-    display: none;
+    display: inline-block;
   }
   form div.field {
     max-width: 40rem;
@@ -103,5 +111,9 @@
   }
   form div.field label {
     width: 10rem;
+  }
+
+  .download-links {
+    margin-bottom: 1rem;
   }
 </style>

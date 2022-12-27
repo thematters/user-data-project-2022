@@ -20,10 +20,11 @@
   onMount(() => {
     (async function () {
       // [, ] = await Promise.all([
-      (mattersQrCodeUri = await QRCode.toDataURL('https://matters.news', { margin: 0 })),
-        (localQrCodeUri = await QRCode.toDataURL('https://data-of-year-2022.matters.one', {
-          margin: 0
-        }));
+      mattersQrCodeUri = await QRCode.toDataURL('https://matters.news', { margin: 0 });
+      localQrCodeUri = await QRCode.toDataURL(window.location.href, {
+        margin: 0
+      });
+
       if (userData?.data?.avatar) {
         for (const formatAvatar of tryNextAvatarFormat(userData.data.avatar)) {
           try {
