@@ -373,6 +373,7 @@
       width="400"
       height="400"
       xmlns:xlink="http://www.w3.org/1999/xlink"
+      href={userImgDataUri ?? defaultImg}
       xlink:href={userImgDataUri ?? defaultImg}
       preserveAspectRatio="xMinYMin slice"
     />
@@ -381,6 +382,7 @@
       width="1026"
       height="1026"
       xmlns:xlink="http://www.w3.org/1999/xlink"
+      href={mattersQrCodeUri || 'https://blaesus.github.io/matters-quote/assets/qrcode.png'}
       xlink:href={mattersQrCodeUri || 'https://blaesus.github.io/matters-quote/assets/qrcode.png'}
     />
     <image
@@ -388,6 +390,7 @@
       width="1026"
       height="1026"
       xmlns:xlink="http://www.w3.org/1999/xlink"
+      href={localQrCodeUri || 'https://blaesus.github.io/matters-quote/assets/qrcode.png'}
       xlink:href={localQrCodeUri || 'https://blaesus.github.io/matters-quote/assets/qrcode.png'}
     />
     <style>
