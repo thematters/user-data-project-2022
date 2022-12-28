@@ -1,11 +1,13 @@
 <script>
-  import { onMount } from 'svelte';
+  // import { onMount } from 'svelte';
+  import { browser } from '$app/environment';
+
   // import qr from 'qrcodejs';
   import QRCode from 'qrcode';
 
   // console.log('what is:', typeof QRCode, QRCode, Object.keys(QRCode));
 
-  import { relativeAge, nFmt, imgToCanvas, tryNextAvatarFormat, defaultImg } from '$lib/utils';
+  import { relativeAge, nFmt, loadImageToDataUri, defaultImg } from '$lib/utils';
 
   export let yearKeywords = 'Web3-Matters';
 
@@ -13,33 +15,28 @@
   export let userData;
   export let el;
 
-  let userImgDataUri;
   let mattersQrCodeUri;
+  $: if (browser) {
+    QRCode.toDataURL('https://matters.news', { margin: 0 }).then((datauri) => {
+      mattersQrCodeUri = datauri;
+    });
+  }
+
   let localQrCodeUri;
+  $: if (browser) {
+    QRCode.toDataURL(window.location.href, {
+      margin: 0
+    }).then((datauri) => {
+      localQrCodeUri = datauri;
+    });
+  }
 
-  onMount(() => {
-    (async function () {
-      // [, ] = await Promise.all([
-      mattersQrCodeUri = await QRCode.toDataURL('https://matters.news', { margin: 0 });
-      localQrCodeUri = await QRCode.toDataURL(window.location.href, {
-        margin: 0
-      });
-
-      if (userData?.data?.avatar) {
-        for (const formatAvatar of tryNextAvatarFormat(userData.data.avatar)) {
-          try {
-            const canvas = await imgToCanvas(formatAvatar);
-            console.log(`got user avatar canvas:`, canvas);
-            userImgDataUri = canvas.toDataURL();
-            break;
-          } catch (err) {
-            console.error(`cors request failed:`, err);
-          }
-        }
-      }
-      // ]);
-    })();
-  });
+  let userImgDataUri;
+  $: if (browser) {
+    loadImageToDataUri(userData?.data?.avatar).then((dataUri) => {
+      userImgDataUri = dataUri;
+    });
+  }
 </script>
 
 <svg
@@ -273,7 +270,7 @@
       <use
         xmlns:xlink="http://www.w3.org/1999/xlink"
         xlink:href="#image0_578_5"
-        transform="translate(0 -0.125) scale(0.0025)"
+        transform="scale(0.0025)"
       />
     </pattern>
     <pattern id="pattern1" patternContentUnits="objectBoundingBox" width="1" height="1">
@@ -374,7 +371,7 @@
     <image
       id="image0_578_5"
       width="400"
-      height="500"
+      height="400"
       xmlns:xlink="http://www.w3.org/1999/xlink"
       xlink:href={userImgDataUri ?? defaultImg}
       preserveAspectRatio="xMinYMin slice"

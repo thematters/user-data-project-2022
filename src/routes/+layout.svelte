@@ -1,5 +1,9 @@
+<script>
+  import { title } from '$lib/consts';
+</script>
+
 <svelte:head>
-  <title>歡迎使用 Matters.News 年度數據 看板</title>
+  <title>{title}</title>
 </svelte:head>
 
 <slot />
