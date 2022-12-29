@@ -42,10 +42,19 @@
     }.png`;
     link.href = blobUrl;
     link.click();
+
+    // always revoke, avoid leaking
     URL.revokeObjectURL(blobUrl);
   }
 
-  $: url = browser && window.location.href;
+  let shareUrl;
+  $: if (browser) {
+    shareUrl = `${window.location.origin}${window.location.pathname}?${new URLSearchParams({
+      userName,
+      yearKeywords
+    }).toString()}`;
+    console.log(`got url:`, { shareUrl });
+  }
 </script>
 
 <main style="max-width: 800px; margin: 0 auto;">
@@ -83,30 +92,45 @@
         <button class="btn" on:click={downloadAsPng}>下載截圖</button>
       </div>
     </div>
-  </form>
 
-  <div class="tools-group">
-    <Twitter
-      class="share-button"
-      text={title}
-      {url}
-      hashtags="data-of-the-year-2022,matters.news"
-      via="MattersLab"
-      related="MattersLab"
-    />
-    <Facebook class="share-button" quote={title} {url} />
-    <Telegram class="share-button" text={title} {url} />
-  </div>
+    <div class="tools-group">
+      <Twitter
+        class="share-button"
+        text={title}
+        url={shareUrl}
+        hashtags="馬特市創作成就,MattersLab"
+        via="MattersLab"
+        related="MattersLab"
+      />
+      <Facebook class="share-button" quote={title} url={shareUrl} />
+      <Telegram class="share-button" text={title} url={shareUrl} />
+      <Line class="share-button" url={shareUrl} />
+
+      <a href="https://Matters.News" target="_blank" rel="noreferrer" class="share-link"
+        ><div>回到 Matters</div></a
+      >
+      <a
+        href="https://matters.news/@hi176/355892-2022-馬特市年度問卷"
+        target="_blank"
+        rel="noreferrer"><div class="share-link">書寫馬特市年度問卷</div></a
+      >
+    </div>
+  </form>
 
   <DataSvg userData={data} {yearKeywords} bind:el={dataSvgEl} />
 </main>
+
+<footer>
+  © 2022 Matters, Inc. All rights reserved. <a href="https://Matters.News">Matters.News</a>
+</footer>
 
 <style>
   h1 {
     text-align: center;
   }
   form {
-    margin-bottom: 1rem;
+    margin-bottom: 4rem;
+    padding-bottom: 1rem;
   }
 
   #userName {
@@ -171,13 +195,30 @@
   }
 
   .tools-group {
+    position: absolute;
+    right: 10rem;
+
     margin: 0.5rem 0;
-    margin-top: -4rem;
-    padding: 0.5rem;
+    margin-top: -2rem;
+    margin-right: -2rem;
+    padding-top: 2rem;
     display: flex;
+    align-items: center;
     justify-content: flex-end;
   }
   .tools-group > :global(* + *) {
     margin-left: 0.5rem;
+  }
+  .tools-group :global(.share-button) {
+    margin-left: 0.5rem;
+  }
+  .tools-group a.share-link {
+    box-sizing: border-box;
+    border: 1px dotted #grey;
+  }
+
+  footer {
+    margin: 1rem 0;
+    text-align: center;
   }
 </style>
