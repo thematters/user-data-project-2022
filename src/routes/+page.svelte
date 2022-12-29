@@ -1,12 +1,13 @@
 <script>
   // import { onMount } from 'svelte';
-  import { browser } from '$app/environment';
+  // import { browser } from '$app/environment';
+  import { page } from '$app/stores';
 
   import { Telegram, Facebook, Twitter, Line } from 'svelte-share-buttons-component';
 
   // import html2canvas from 'html2canvas';
 
-  import { title } from '$lib/consts';
+  import { title, description, keywords, canonicalOrigin } from '$lib/consts';
   import { rasterize } from '$lib/utils';
   // import { download } from '$lib/dom-download.js';
 
@@ -44,15 +45,31 @@
     URL.revokeObjectURL(blobUrl);
   }
 
-  let shareUrl;
-  $: if (browser) {
-    shareUrl = `${window.location.origin}${window.location.pathname}?${new URLSearchParams({
-      userName,
-      yearKeywords
-    }).toString()}`;
-    console.log(`got url:`, { shareUrl });
-  }
+  $: shareUrl = `${canonicalOrigin}/${$page.url.search}`;
+  $: updatedTitle = title + (data?.data?.displayName ? ` - ${data.data.displayName.trim()}` : '');
 </script>
+
+<svelte:head>
+  <title>{updatedTitle}</title>
+  <meta name="description" content={description} />
+  <meta
+    name="keywords"
+    content={[data?.data?.displayName?.trim()].concat(keywords).filter(Boolean).join(',')}
+  />
+  <meta property="og:title" content={updatedTitle} />
+  <meta property="og:description" content={description} />
+  <meta property="og:type" content="website" />
+  <meta property="og:image" content={`${canonicalOrigin}/img/screenshot.png`} />
+  <meta property="og:url" content={shareUrl} />
+  <meta property="twitter:title" content={updatedTitle} />
+  <meta property="twitter:description" content={description} />
+  <meta property="twitter:card" content="summary_large_image" />
+  <meta property="twitter:image" content={`${canonicalOrigin}/img/screenshot.png`} />
+  <meta property="twitter:url" content={shareUrl} />
+  <meta property="meta:userDescription" content={`${data?.data?.displayName}`} />
+
+  <link rel="canonical" href={shareUrl} />
+</svelte:head>
 
 <main style="max-width: 800px; margin: 0 auto;">
   <h1>{title}</h1>
@@ -65,6 +82,7 @@
         name="userName"
         id="userName"
         size={10}
+        maxlength={20}
         placeholder="Enter your Matters.News @userName"
         bind:value={userName}
       />
@@ -73,7 +91,7 @@
         type="text"
         name="yearKeywords"
         id="yearKeywords"
-        size={20}
+        size={24}
         maxlength={20}
         placeholder="我的年度創作關鍵字是"
         bind:value={yearKeywords}
@@ -95,7 +113,7 @@
         class="share-button"
         text={title}
         url={shareUrl}
-        hashtags="馬特市創作成就,MattersLab"
+        hashtags="2022馬特市創作成就"
         via="MattersLab"
         related="MattersLab"
       />
@@ -142,7 +160,7 @@
   form .row {
     display: flex;
     align-items: baseline;
-    justify-content: center;
+    justify-content: space-evenly;
     margin: 0.5rem 0;
     width: 100%;
   }
