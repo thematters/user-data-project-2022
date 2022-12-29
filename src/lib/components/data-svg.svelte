@@ -1,11 +1,7 @@
 <script>
   // import { onMount } from 'svelte';
   import { browser } from '$app/environment';
-
-  // import qr from 'qrcodejs';
   import QRCode from 'qrcode';
-
-  // console.log('what is:', typeof QRCode, QRCode, Object.keys(QRCode));
 
   import { relativeAge, nFmt, loadImageToDataUri, defaultImg } from '$lib/utils';
 
@@ -13,6 +9,7 @@
 
   /** @type {import('./$types').PageData} */
   export let userData;
+
   export let el;
 
   let mattersQrCodeUri;
@@ -40,9 +37,8 @@
 </script>
 
 <svg
-  width={800}
-  height={800}
   viewBox="0 0 1000 1000"
+  preserveAspectRatio="xMidYMid meet"
   fill="none"
   xmlns="http://www.w3.org/2000/svg"
   xmlns:xlink="http://www.w3.org/1999/xlink"

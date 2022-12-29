@@ -1,11 +1,10 @@
 import { format as d3Format } from 'd3-format';
 import moment from 'moment';
-// export { DOM } from '@observablehq/stdlib';
-
-// console.log('dom is:', DOM);
 
 export function loadUserData(userName, year = 2022, fetch = window.fetch) {
-  const u = new URL(`https://user-data-api.matters.one/@${userName}`);
+  const m = userName.match(/\w+/);
+  if (m) userName = m[0];
+  const u = new URL(`https://user-data-api.matters.one/${userName}`);
   if (year) {
     u.searchParams.set('year', year);
   }
@@ -27,7 +26,6 @@ export function relativeAge(since) {
   else return `${Math.floor(d / 12)} 年 ${d % 12} 個月`;
 }
 
-// console.log(new Date, 'imported d3:', d3);
 export const nFmt = d3Format(',');
 
 // from https://github.com/observablehq/stdlib/blob/main/src/dom/context2d.js

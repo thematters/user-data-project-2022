@@ -16,13 +16,10 @@
   /** @type {import('./$types').PageData} */
   export let data;
 
-  // const width = 800;
-  // const yearKeywords = 'Web3-Matters';
-
-  // $: userData = data;
-
   let userName = data?.searchParams?.userName || 'hi176';
   let yearKeywords = data?.searchParams?.yearKeywords || 'Web3 Matters';
+
+  const year = data?.data?.year ?? 2022;
 
   let dataSvgEl;
 
@@ -35,9 +32,7 @@
     // console.log('got blobUrl:', blobUrl);
 
     const link = document.createElement('a');
-    link.download = `${data?.data?.displayName ?? 'untitled'} ${yearKeywords} ${
-      data?.data?.year ?? 2022
-    }.png`;
+    link.download = `${data?.data?.displayName ?? 'untitled'} ${yearKeywords} ${year}.png`;
     link.href = blobUrl;
     link.click();
 
@@ -46,7 +41,9 @@
   }
 
   $: shareUrl = `${canonicalOrigin}/${$page.url.search}`;
-  $: updatedTitle = title + (data?.data?.displayName ? ` - ${data.data.displayName.trim()}` : '');
+  $: updatedTitle =
+    title.replace(/2022/, year) +
+    (data?.data?.displayName ? ` - ${data.data.displayName.trim()}` : '');
 </script>
 
 <svelte:head>
@@ -54,7 +51,10 @@
   <meta name="description" content={description} />
   <meta
     name="keywords"
-    content={[data?.data?.displayName?.trim()].concat(keywords).filter(Boolean).join(',')}
+    content={[data?.data?.displayName?.trim()]
+      .concat(keywords.map((k) => k.replaceAll(/2022/g, year)))
+      .filter(Boolean)
+      .join(',')}
   />
   <meta property="og:title" content={updatedTitle} />
   <meta property="og:description" content={description} />
@@ -71,9 +71,14 @@
   <link rel="canonical" href={shareUrl} />
 </svelte:head>
 
-<main style="max-width: 800px; margin: 0 auto;">
-  <h1>{title}</h1>
+<header>
+  <h1>{title.replace(/2022/, year)}</h1>
+  <p class="hint">
+    溫馨提醒：想分享個人榜單，請下載圖片後用圖檔分享；直接分享網址不會顯示個人數據唷
+  </p>
+</header>
 
+<main>
   <form>
     <div class="row">
       <label for="userName">用戶名 (@userName):</label>
@@ -81,28 +86,30 @@
         type="text"
         name="userName"
         id="userName"
-        size={10}
+        size={20}
         maxlength={20}
         placeholder="Enter your Matters.News @userName"
         bind:value={userName}
       />
+    </div>
+    <div class="row">
       <label for="yearKeywords">年度創作關鍵字:</label>
       <input
         type="text"
         name="yearKeywords"
         id="yearKeywords"
-        size={24}
+        size={20}
         maxlength={20}
         placeholder="我的年度創作關鍵字是"
         bind:value={yearKeywords}
       />
     </div>
 
-    <div class="row">
+    <div class="row flex-1">
       <button type="submit" class="btn">Enter</button>
     </div>
 
-    <div class="row">
+    <div class="row flex-1">
       <div class="download-links">
         <button class="btn" on:click={downloadAsPng}>下載截圖</button>
       </div>
@@ -136,22 +143,52 @@
 </main>
 
 <footer>
-  © 2022 Matters, Inc. All rights reserved. <a href="https://Matters.News">Matters.News</a>
+  © 2022 - 2023 Matters, Inc. All rights reserved. <a
+    href="https://Matters.News"
+    target="_blank"
+    rel="noreferrer">Matters.News</a
+  >
 </footer>
 
 <style>
-  h1 {
-    text-align: center;
+  :global(body) {
+    margin: 0;
   }
-  form {
-    margin-bottom: 4rem;
-    padding-bottom: 1rem;
+  main {
+    margin: 0 auto;
+  }
+  @media (min-width: 1000px) {
+    main {
+      max-width: 1000px;
+    }
   }
 
-  #userName {
-    border-radius: 0.25rem;
-    border: 1px solid #ccc;
+  header {
+    text-align: center;
   }
+  header h1 {
+    white-space: nowrap;
+  }
+  header .hint {
+    color: grey;
+    margin-top: 0;
+  }
+  footer {
+    color: grey;
+  }
+  footer * {
+    color: inherit;
+  }
+
+  form {
+    position: relative;
+    padding-bottom: 4rem;
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+  }
+
+  #userName,
   #yearKeywords {
     border-radius: 0.25rem;
     border: 1px solid #ccc;
@@ -160,10 +197,19 @@
   form .row {
     display: flex;
     align-items: baseline;
-    justify-content: space-evenly;
+    justify-content: center;
     margin: 0.5rem 0;
-    width: 100%;
   }
+  @media (min-width: 768px) {
+    form {
+      flex-direction: row;
+      justify-content: space-evenly;
+    }
+    form .row {
+      justify-content: center;
+    }
+  }
+
   form .row input {
     font-size: 1.1rem;
     padding: 0.25rem;
@@ -174,6 +220,9 @@
     border: 1px solid red;
     box-shadow: 0 0 10px #278e7b;
   }
+  .flex-1 {
+    flex: 0 0 100%;
+  }
 
   form button[type='submit'] {
     display: block;
@@ -182,6 +231,7 @@
     font-weight: bold;
     margin-right: 0.5rem;
     font-weight: bold;
+    min-width: 10rem;
   }
   form div.row label:not(:first-of-type) {
     margin-left: 1rem;
@@ -211,16 +261,16 @@
 
   .tools-group {
     position: absolute;
-    right: 10rem;
+    right: 0;
+    bottom: 0.25rem;
 
     margin: 0.5rem 0;
-    margin-top: -2rem;
-    margin-right: -2rem;
     padding-top: 2rem;
     display: flex;
     align-items: center;
     justify-content: flex-end;
   }
+
   .tools-group > :global(* + *) {
     margin-left: 0.5rem;
   }
@@ -235,5 +285,6 @@
   footer {
     margin: 1rem 0;
     text-align: center;
+    white-space: nowrap;
   }
 </style>
