@@ -14,7 +14,7 @@
 
   let mattersQrCodeUri;
   $: if (browser) {
-    QRCode.toDataURL('https://matters.news', { margin: 0 }).then((datauri) => {
+    QRCode.toDataURL('https://matters.town', { margin: 0 }).then((datauri) => {
       mattersQrCodeUri = datauri;
     });
   }
@@ -107,7 +107,7 @@
     <rect x="87" y="494" width="826" height="32" fill="#FFEB97" />
     <text fill="#114C41" font-size="40" font-weight="bold" letter-spacing="0em"
       ><tspan x="87" y="509.2"
-        >{userData?.data?.year ?? 2022} 年，我在 Matters.News 完成了以下創舉</tspan
+        >{userData?.data?.year ?? 2022} 年，我在 Matters.Town 完成了以下創舉</tspan
       ></text
     >
     <rect x="70" y="554" width="231" height="256" rx="32" fill="url(#paint1_linear_578_5)" />

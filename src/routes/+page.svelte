@@ -88,7 +88,7 @@
         id="userName"
         size={20}
         maxlength={20}
-        placeholder="Enter your Matters.News @userName"
+        placeholder="Enter your Matters.Town @userName"
         bind:value={userName}
       />
     </div>
@@ -128,11 +128,11 @@
       <Telegram class="share-button" text={title} url={shareUrl} />
       <Line class="share-button" url={shareUrl} />
 
-      <a href="https://Matters.News" target="_blank" rel="noreferrer" class="share-link"
+      <a href="https://Matters.Town" target="_blank" rel="noreferrer" class="share-link"
         ><div>回到 Matters</div></a
       >
       <a
-        href="https://matters.news/@hi176/355892-2022-馬特市年度問卷"
+        href="https://matters.town/@hi176/355892-2022-馬特市年度問卷"
         target="_blank"
         rel="noreferrer"><div class="share-link">書寫馬特市年度問卷</div></a
       >
@@ -144,9 +144,9 @@
 
 <footer>
   © 2022 - 2023 Matters, Inc. All rights reserved. <a
-    href="https://Matters.News"
+    href="https://Matters.Town"
     target="_blank"
-    rel="noreferrer">Matters.News</a
+    rel="noreferrer">Matters.Town</a
   >
 </footer>
 
